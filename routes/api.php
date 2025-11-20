@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\DistrictController;
+use App\Http\Controllers\Api\StoreController;
 use App\Http\Middleware\ApiTokenMiddleware;
 
 Route::group(['prefix' => '/auth'], function () {
@@ -25,6 +26,11 @@ Route::middleware(ApiTokenMiddleware::class)->group(function () {
         Route::post('/update', [AddressController::class, 'update']);
         Route::post('/delete', [AddressController::class, 'delete']);
         Route::post('/set-main', [AddressController::class, 'setMain']);
+    });
+
+    Route::group(['prefix' => '/store'], function () {
+        Route::post('/', [StoreController::class, 'open']);
+        Route::post('/update', [StoreController::class, 'update']);
     });
 });
 
