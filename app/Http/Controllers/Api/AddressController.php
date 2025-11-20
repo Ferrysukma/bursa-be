@@ -21,9 +21,9 @@ class AddressController extends Controller
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
             'label'       => 'required|string|max:255',
-            'province_id' => 'required|number|min:1',
+            'province_id' => 'required|integer|min:1',
             'province'    => 'required|string|max:255',
-            'city_id'     => 'required|number|min:1',
+            'city_id'     => 'required|integer|min:1',
             'city'        => 'required|string|max:255',
             'address'     => 'required|string',
         ]);
@@ -31,6 +31,7 @@ class AddressController extends Controller
             return ResponseWebTrait::error(false, $validator->errors()->first(), 400);
         }
 
+        $data = $validator->validated();
         $address    = DB::table('addresses')
         ->where('user_id', $request->token_user_id)
         ->get()
@@ -40,7 +41,6 @@ class AddressController extends Controller
             $data['is_main'] = 1;
         }
 
-        $data = $validator->validated();
         $data['user_id'] = $request->token_user_id;
         $data['is_active'] = 1;
         $data['created_at'] = now();
@@ -52,11 +52,11 @@ class AddressController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'id'          => 'required|number',
+            'id'          => 'required|integer',
             'label'       => 'required|string|max:255',
-            'province_id' => 'required|number|min:1',
+            'province_id' => 'required|integer|min:1',
             'province'    => 'required|string|max:255',
-            'city_id'     => 'required|number|min:1',
+            'city_id'     => 'required|integer|min:1',
             'city'        => 'required|string|max:255',
             'address'     => 'required|string',
         ]);
@@ -65,19 +65,18 @@ class AddressController extends Controller
         }
 
         $data = $validator->validated();
-        $data['user_id'] = $request->token_user_id;
         $data['updated_at'] = now();
         DB::table('addresses')
         ->where('id', $request->id)
         ->where('user_id', $request->token_user_id)
         ->update($data);
 
-        return ResponseWebTrait::success(true, 'Success', $data);
+        return ResponseWebTrait::success(true, 'Success add address', $data);
     }
 
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|number',
+            'id' => 'required|integer',
         ]);
         if ($validator->errors()->count() > 0) {
             return ResponseWebTrait::error(false, $validator->errors()->first(), 400);
@@ -88,12 +87,12 @@ class AddressController extends Controller
         ->where('user_id', $request->token_user_id)
         ->update(['is_active' => 0, 'updated_at' => now()]);
 
-        return ResponseWebTrait::success(true, 'Success', []);
+        return ResponseWebTrait::success(true, 'Success delete address', []);
     }
 
     public function setMain(Request $request) {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|number',
+            'id' => 'required|integer',
         ]);
         if ($validator->errors()->count() > 0) {
             return ResponseWebTrait::error(false, $validator->errors()->first(), 400);
@@ -101,7 +100,7 @@ class AddressController extends Controller
 
         DB::table('addresses')
         ->where('user_id', $request->token_user_id)
-        ->where('id', '!=', $request->id)
+        ->where('id', '<>', $request->id)
         ->update(['is_main' => 0, 'updated_at' => now()]);
 
         DB::table('addresses')
@@ -109,6 +108,6 @@ class AddressController extends Controller
         ->where('id', $request->id)
         ->update(['is_main' => 1, 'updated_at' => now()]);
 
-        return ResponseWebTrait::success(true, 'Success', []);
+        return ResponseWebTrait::success(true, 'Success set main address', []);
     }
 }
