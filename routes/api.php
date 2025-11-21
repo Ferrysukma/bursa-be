@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Middleware\ApiTokenMiddleware;
 
 Route::group(['prefix' => '/auth'], function () {
@@ -33,12 +34,24 @@ Route::middleware(ApiTokenMiddleware::class)->group(function () {
         Route::post('/', [StoreController::class, 'open']);
         Route::post('/update', [StoreController::class, 'update']);
     });
+
+    Route::group(['prefix' => '/products'], function () {
+        Route::get('/list-by-store', [ProductController::class, 'listByStore']);
+        Route::post('/add', [ProductController::class, 'add']);
+        Route::post('/update', [ProductController::class, 'update']);
+        Route::post('/delete', [ProductController::class, 'delete']);
+    });
 });
 
 Route::group(['prefix' => '/category'], function () {
     Route::get('/', [CategoryController::class, 'list']);
     Route::post('/', [CategoryController::class, 'add']);
     Route::post('/update', [CategoryController::class, 'update']);
+});
+
+Route::group(['prefix' => '/products'], function () {
+    Route::get('/list-all', [ProductController::class, 'listAll']);
+    Route::get('/{slug}', [ProductController::class, 'detail']);
 });
 
 Route::get('/province', [DistrictController::class, 'province']);
