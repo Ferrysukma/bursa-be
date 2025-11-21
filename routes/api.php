@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Middleware\ApiTokenMiddleware;
 
 Route::group(['prefix' => '/auth'], function () {
@@ -40,6 +41,11 @@ Route::middleware(ApiTokenMiddleware::class)->group(function () {
         Route::post('/add', [ProductController::class, 'add']);
         Route::post('/update', [ProductController::class, 'update']);
         Route::post('/delete', [ProductController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => '/cart'], function () {
+        Route::get('/', [CartController::class, 'list']);
+        Route::post('/', [CartController::class, 'add']);
     });
 });
 
