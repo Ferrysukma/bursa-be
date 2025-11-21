@@ -46,6 +46,8 @@ Route::middleware(ApiTokenMiddleware::class)->group(function () {
     Route::group(['prefix' => '/cart'], function () {
         Route::get('/', [CartController::class, 'list']);
         Route::post('/', [CartController::class, 'add']);
+        Route::post('/update', [CartController::class, 'update']);
+        Route::post('/delete', [CartController::class, 'delete']);
     });
 });
 
