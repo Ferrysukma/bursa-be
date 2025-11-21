@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\StoreController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\ApiTokenMiddleware;
 
 Route::group(['prefix' => '/auth'], function () {
@@ -32,6 +33,12 @@ Route::middleware(ApiTokenMiddleware::class)->group(function () {
         Route::post('/', [StoreController::class, 'open']);
         Route::post('/update', [StoreController::class, 'update']);
     });
+});
+
+Route::group(['prefix' => '/category'], function () {
+    Route::get('/', [CategoryController::class, 'list']);
+    Route::post('/', [CategoryController::class, 'add']);
+    Route::post('/update', [CategoryController::class, 'update']);
 });
 
 Route::get('/province', [DistrictController::class, 'province']);
